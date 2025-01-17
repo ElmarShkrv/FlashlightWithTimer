@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightYellow"
     android:orientation="vertical"
     android:padding="48dp"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/flashlightButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Toggle Flashlight" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="64dp"
         android:gravity="center"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <NumberPicker
             android:id="@+id/hoursPicker"
@@ -39,18 +39,32 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/timerInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:hint="Enter minutes for countdown"
-        android:inputType="number" />
-
     <Button
         android:id="@+id/startTimerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Countdown Timer" />
+        android:backgroundTint="@color/lightYellow2"
+        android:padding="16dp"
+        android:text="@string/start_countdown"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/flashlightButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/flashlightButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lightYellow2"
+        android:padding="16dp"
+        android:text="@string/turn_on_of"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,13 @@
 package com.example.flashlightwithtimer
 
 import android.content.Context
+import android.graphics.Color
 import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.PowerManager
+import android.widget.EditText
+import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        val hourPicker: NumberPicker = findViewById(R.id.hoursPicker)
+        val minutePicker: NumberPicker = findViewById(R.id.minutesPicker)
+        val secondPicker: NumberPicker = findViewById(R.id.secondsPicker)
+
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         cameraId = cameraManager.cameraIdList.firstOrNull {
             cameraManager.getCameraCharacteristics(it)
@@ -33,7 +40,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp:FlashlightWakelock")
+        wakeLock =
+            powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp:FlashlightWakelock")
+
+        customizeNumberPicker(hourPicker)
+        customizeNumberPicker(minutePicker)
+        customizeNumberPicker(secondPicker)
 
         setupNumberPickers()
 
@@ -43,12 +55,17 @@ class MainActivity : AppCompatActivity() {
 
         binding.startTimerButton.setOnClickListener {
             startCountdown()
-//            val minutes = binding.timerInput.text.toString().toIntOrNull()
-//            if (minutes != null && minutes > 0) {
-//                startCountdown(minutes * 60 * 1000L)
-//            } else {
-//                Toast.makeText(this, "Enter a valid number of minutes", Toast.LENGTH_SHORT).show()
-//            }
+        }
+
+        // Apply the style again when changing the value, if needed
+        hourPicker.setOnValueChangedListener { _, _, _ ->
+            customizeNumberPicker(hourPicker)
+        }
+        minutePicker.setOnValueChangedListener { _, _, _ ->
+            customizeNumberPicker(minutePicker)
+        }
+        secondPicker.setOnValueChangedListener { _, _, _ ->
+            customizeNumberPicker(secondPicker)
         }
 
     }
@@ -99,9 +116,10 @@ class MainActivity : AppCompatActivity() {
         val minutes = binding.minutesPicker.value
         val seconds = binding.secondsPicker.value
 
-        val totalMillis = TimeUnit.HOURS.toMillis(hours.toLong()) +
-                TimeUnit.MINUTES.toMillis(minutes.toLong()) +
-                TimeUnit.SECONDS.toMillis(seconds.toLong())
+        val totalMillis =
+            TimeUnit.HOURS.toMillis(hours.toLong()) + TimeUnit.MINUTES.toMillis(minutes.toLong()) + TimeUnit.SECONDS.toMillis(
+                seconds.toLong()
+            )
 
         if (totalMillis > 0) {
             turnOnFlashlight()
@@ -124,7 +142,11 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     turnOffFlashlight()
-                    Toast.makeText(this@MainActivity, "Timer finished, flashlight turned off", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Timer finished, flashlight turned off",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }.start()
         } else {
@@ -132,22 +154,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    private fun startCountdown(duration: Long) {
-//        turnOnFlashlight()
-//        countDownTimer?.cancel()
-//        countDownTimer = object : CountDownTimer(duration, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-//                // Optionally update UI with remaining time
-//                TODO("Update editText with remaining time")
-//                // binding.timerInput.text = millisUntilFinished.toEditable()
-//            }
-//
-//            override fun onFinish() {
-//                turnOffFlashlight()
-//                Toast.makeText(this@MainActivity, "Timer finished, flashlight turned off", Toast.LENGTH_SHORT).show()
-//            }
-//        }.start()
-//    }
+    fun customizeNumberPicker(numberPicker: NumberPicker) {
+        numberPicker.postDelayed({
+            for (i in 0 until numberPicker.childCount) {
+                val child = numberPicker.getChildAt(i)
+                if (child is EditText) {
+                    // Apply color and text size
+                    child.setTextColor(Color.RED) // Change to your desired color
+                    child.textSize = 20f // Change text size
+                }
+            }
+        }, 50) // Delay to ensure layout is completed before applying customizations
+    }
 
     override fun onDestroy() {
         super.onDestroy()
